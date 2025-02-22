@@ -1,8 +1,32 @@
-import React, { useState } from "react";
-import { StyleSheet, View, Text, ScrollView } from "react-native";
+import React from "react";
+import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Linking } from "react-native";
 import { Film, Ticket, Music, Palette } from 'lucide-react-native';
 import BarreProgression from '../../components/BarreProgression';
 import ClaimButton from '../../components/ClaimButton';
+import Svg, { Circle } from 'react-native-svg';
+
+// Circular Progress Component
+const CircularProgress = ({ progress, size, strokeWidth, color }) => {
+    const radius = (size - strokeWidth) / 2;
+    const circumference = radius * 2 * Math.PI;
+    const strokeDashoffset = circumference - progress * circumference;
+
+    return (
+        <Svg width={size} height={size}>
+            <Circle
+                stroke={color}
+                fill="transparent"
+                strokeWidth={strokeWidth}
+                strokeDasharray={`${circumference} ${circumference}`}
+                strokeDashoffset={strokeDashoffset}
+                r={radius}
+                cx={size / 2}
+                cy={size / 2}
+                transform={`rotate(-90 ${size / 2} ${size / 2})`}
+            />
+        </Svg>
+    );
+};
 
 export default function QuestScreen() {
     const xp = 750;
@@ -13,6 +37,20 @@ export default function QuestScreen() {
     const dailyQuestProgress1 = 0.0;
     const dailyQuestProgress2 = 0.5;
     const dailyQuestProgress3 = 1.0;
+
+    const rewardsProgress = [0.9, 0.3, 0.8, 1.0]; // Example progress values for rewards
+    const rewardLinks = [
+        "https://www.cinemasgaumontpathe.com/",
+        "https://www.fnac.com/",
+        "https://www.ticketmaster.fr/",
+        "https://www.cultura.com/"
+    ];
+
+    const handleRewardPress = (index) => {
+        if (rewardsProgress[index] === 1.0) {
+            Linking.openURL(rewardLinks[index]);
+        }
+    };
 
     return (
         <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -60,22 +98,25 @@ export default function QuestScreen() {
                 </View>
                 <Text style={styles.rewardsText}>Vos Récompenses</Text>
                 <View style={styles.blueRectangleLarge}>
-                    <View style={styles.iconContainer}>
-                        <Film size={50} color="white" />
-                        <Text style={styles.iconText}>Place de cinéma</Text>
-                    </View>
-                    <View style={styles.iconContainer}>
-                        <Ticket size={50} color="white" />
-                        <Text style={styles.iconText}>Bon d'achat</Text>
-                    </View>
-                    <View style={styles.iconContainer}>
-                        <Music size={50} color="white" />
-                        <Text style={styles.iconText}>Place de concert</Text>
-                    </View>
-                    <View style={styles.iconContainer}>
-                        <Palette size={50} color="white" />
-                        <Text style={styles.iconText}>Atelier</Text>
-                    </View>
+
+                    {[Film, Ticket, Music, Palette].map((Icon, index) => (
+                        <TouchableOpacity key={index} style={styles.iconContainer} onPress={() => handleRewardPress(index)}>
+                            <View style={styles.circularProgressContainer}>
+                                <CircularProgress
+                                    progress={rewardsProgress[index]}
+                                    size={100}
+                                    strokeWidth={10}
+                                    color="#AAD492"
+                                />
+                                <View style={styles.iconWrapper}>
+                                    <Icon size={50} color="white" />
+                                </View>
+                            </View>
+                            <Text style={styles.iconText}>
+                                {['Place de cinéma', 'Bon d\'achat', 'Place de concert', 'Atelier'][index]}
+                            </Text>
+                        </TouchableOpacity>
+                    ))}
                 </View>
                 <View style={styles.bottomSpace}></View>
             </View>
@@ -181,7 +222,7 @@ const styles = StyleSheet.create({
         fontFamily: 'Helvetica Neue',
     },
     blueRectangleLarge: {
-        height: 200,
+        height: 320,
         width: 350,
         borderRadius: 15,
         backgroundColor: '#4F88A6',
@@ -205,10 +246,18 @@ const styles = StyleSheet.create({
         margin: 10,
         width: '40%',
     },
+    circularProgressContainer: {
+        position: 'relative',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    iconWrapper: {
+        position: 'absolute',
+    },
     iconText: {
         color: 'white',
         fontSize: 16,
-        marginTop: 5,
+        marginTop: 10,
         textAlign: 'center',
         fontFamily: 'Helvetica Neue',
     },
