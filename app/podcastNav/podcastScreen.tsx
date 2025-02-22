@@ -1,63 +1,247 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, Button, Image } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, FlatList, StyleSheet, Button, TouchableOpacity, Image } from 'react-native';
 import axios from 'axios';
 import crypto from 'crypto-js';
+import {
+  Dumbbell as SportIcon,
+  History as HistoryIcon,
+  Beaker as ScienceIcon,
+  BookOpen as PhilosophyIcon,
+  Landmark as PoliticsIcon,
+  Palette as ArtIcon
+} from 'lucide-react-native';
 
 const PodcastScreen = ({ navigation }) => {
   const [podcasts, setPodcasts] = useState([]);
+  const [selectedInterests, setSelectedInterests] = useState([]);
+  const [showOverlay, setShowOverlay] = useState(true);
+  const [iconColors, setIconColors] = useState({});
 
-  useEffect(() => {
-    const searchPodcasts = async () => {
-      const apiKey = 'JC9VAXBYVKVTUKXYEJEM';
-      const apiSecret = 'eVKPgnRZs6qB$QedUwEEvgaZaEw2xTyLHZ2UGgMk';
-      const apiHeaderTime = Math.floor(Date.now() / 1000);
-      const hash = crypto.SHA1(apiKey + apiSecret + apiHeaderTime).toString(crypto.enc.Hex);
+  const searchPodcasts = async (subjects) => {
+    const apiKey = 'JC9VAXBYVKVTUKXYEJEM';
+    const apiSecret = 'eVKPgnRZs6qB$QedUwEEvgaZaEw2xTyLHZ2UGgMk';
+    const apiHeaderTime = Math.floor(Date.now() / 1000);
+    const hash = crypto.SHA1(apiKey + apiSecret + apiHeaderTime).toString(crypto.enc.Hex);
 
-      const headers = {
-        'User-Agent': 'CulturXP/1.0',
-        'X-Auth-Key': apiKey,
-        'X-Auth-Date': apiHeaderTime.toString(),
-        'Authorization': hash,
-      };
-
-      try {
-        const response = await axios.get('https://api.podcastindex.org/api/1.0/search/byterm', {
-          params: { q: 'manga' },
-          headers: headers,
-        });
-
-        setPodcasts(response.data.feeds);
-      } catch (error) {
-        console.error('Erreur API Podcast Index:', error);
-      }
+    const headers = {
+      'User-Agent': 'CulturXP/1.0',
+      'X-Auth-Key': apiKey,
+      'X-Auth-Date': apiHeaderTime.toString(),
+      'Authorization': hash,
     };
 
-    searchPodcasts();
-  }, []);
+    try {
+      const requests = subjects.map((subject) =>
+        axios.get('https://api.podcastindex.org/api/1.0/search/byterm', {
+          params: { q: subject },
+          headers: headers,
+        })
+      );
+
+      const responses = await Promise.all(requests);
+      const mergedPodcasts = responses.flatMap((response) => response.data.feeds);
+
+      setPodcasts(mergedPodcasts);
+    } catch (error) {
+      console.error('Erreur API Podcast Index:', error);
+    }
+  };
+
+  const interests = [
+    { id: 1, name: 'Sport', icon: SportIcon },
+    { id: 2, name: 'Histoire', icon: HistoryIcon },
+    { id: 3, name: 'Sciences', icon: ScienceIcon },
+    { id: 4, name: 'Philosophie', icon: PhilosophyIcon },
+    { id: 5, name: 'Politique', icon: PoliticsIcon },
+    { id: 6, name: 'Art', icon: ArtIcon },
+  ];
+
+  const handleInterestPress = (interestId) => {
+    setSelectedInterests((prevSelected) => {
+      if (prevSelected.includes(interestId)) {
+        return prevSelected.filter((id) => id !== interestId);
+      } else {
+        return [...prevSelected, interestId];
+      }
+    });
+
+    setIconColors((prevColors) => ({
+      ...prevColors,
+      [interestId]: !prevColors[interestId],
+    }));
+  };
+
+  const handleValidatePress = () => {
+    if (selectedInterests.length > 0) {
+      const selectedNames = selectedInterests.map((id) =>
+        interests.find((interest) => interest.id === id).name
+      );
+      searchPodcasts(selectedNames);
+      setShowOverlay(false);
+    }
+  };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.sectionTitle}>Podcasts</Text>
+      <Text style={styles.sectionTitle}>Ces podcasts peuvent vous plaire</Text>
       <FlatList
         data={podcasts}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item, index) => item.id + '-' + index}
         renderItem={({ item }) => (
-          <View style={styles.podcastItem}>
-            {item.image && <Image source={{ uri: item.image }} style={styles.podcastImage} />}
-            <Text>{item.title}</Text>
-            <Button title="Voir épisodes" onPress={() => navigation.navigate('EpisodeScreen', { rssUrl: item.url })} />
+        <TouchableOpacity
+          style={styles.podcastItem}
+          onPress={() => navigation.navigate('EpisodeScreen', { rssUrl: item.url, podcastImage: item.image, podcastTitle : item.title })}
+        >
+          <View style={styles.imageContainer}>
+            <Text style={styles.placeholderText}>?</Text>
+            <Image
+              source={{ uri: item.image }}
+              style={styles.podcastImage}
+            />
           </View>
+          <View style={styles.podcastDetails}>
+            <Text style={styles.podcastTitle}>{item.title}</Text>
+            <Text style={styles.podcastAuthor}>{item.author}</Text>
+          </View>
+          <TouchableOpacity style={styles.menuButton}>
+            <Text style={styles.menuText}>⋮</Text>
+          </TouchableOpacity>
+        </TouchableOpacity>
         )}
       />
+
+      {showOverlay && (
+        <View style={styles.overlay}>
+          <Text style={styles.overlayTitle}>Sélectionnez vos centres d'intérêt</Text>
+          <View style={styles.interestsContainer}>
+            {interests.map((interest) => {
+              const IconComponent = interest.icon;
+              return (
+                <TouchableOpacity
+                  key={interest.id}
+                  style={[
+                    styles.interestBox,
+                    iconColors[interest.id] && styles.selectedInterestBox,
+                  ]}
+                  onPress={() => handleInterestPress(interest.id)}
+                >
+                  <IconComponent size={40} color={iconColors[interest.id] ? '#AAD492' : '#4F88A6'} />
+                  <Text style={[styles.interestText, iconColors[interest.id] && styles.selectedInterestText]}>
+                    {interest.name}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+          <TouchableOpacity
+            style={[styles.validateButton, selectedInterests.length === 0 && styles.disabledButton]}
+            onPress={handleValidatePress}
+            disabled={selectedInterests.length === 0}
+          >
+            <Text style={styles.validateButtonText}>Valider</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20 },
-  sectionTitle: { fontSize: 20, fontWeight: 'bold', marginVertical: 10 },
-  podcastItem: { padding: 10, borderBottomWidth: 1, flexDirection: 'row', alignItems: 'center' },
-  podcastImage: { width: 50, height: 50, marginRight: 10 },
+  container: { flex: 1, backgroundColor: '#252121' },
+  sectionTitle: { fontSize: 26, fontWeight: '800', margin: 10, color: '#fff' },
+  podcastItem: {
+    padding: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  imageContainer: {
+    position: 'relative',
+    width: 48,
+    height: 48,
+  },
+  placeholderText: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    fontSize: 28,
+    color: '#fff',
+    zIndex: 1,
+  },
+  podcastImage: {
+    width: 48,
+    height: 48,
+    borderRadius: 4,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    zIndex: 2,
+  },
+  podcastDetails: { flex: 1, marginLeft: 10 },
+  podcastTitle: { fontSize: 20, fontWeight: '600', color: '#fff' },
+  podcastAuthor: { fontSize: 16, fontWeight: '400', color: '#aaa' },
+  menuButton: { padding: 10 },
+  menuText: { fontSize: 28, color: '#aaa' },
+  overlay: {
+    position: 'absolute',
+    height: '100%',
+    width: '100%',
+    backgroundColor: '#252121',
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
+  overlayTitle: { color: '#fff', fontSize: 22, fontWeight: '800', textAlign: 'center' },
+  interestsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+  },
+  interestBox: {
+    width: 150,
+    height: 150,
+    borderRadius: 8,
+    borderColor: '#4F88A6',
+    borderWidth: 8,
+    backgroundColor: 'transparent',
+    margin: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  selectedInterestBox: {
+    borderColor: '#AAD492',
+  },
+  interestIcon: {
+    fontSize: 40,
+    color: '#4F88A6',
+  },
+  interestText: {
+    color: '#4F88A6',
+    fontWeight: '800',
+    fontSize: 20,
+  },
+  selectedInterestText: {
+    color: '#AAD492',
+  },
+  validateButton: {
+    width: '85%',
+    backgroundColor: '#AAD492',
+    borderRadius: 20,
+    padding: 12,
+    alignItems: 'center',
+  },
+  disabledButton: {
+    opacity: 0.4,
+  },
+  validateButtonText: {
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: '800',
+  },
 });
 
 export default PodcastScreen;
