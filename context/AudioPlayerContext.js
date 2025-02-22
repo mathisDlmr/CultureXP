@@ -1,5 +1,5 @@
-import React, { createContext, useState, useContext } from 'react';
-import { Audio } from 'expo-av';
+import React, { createContext, useState, useContext } from "react";
+import { Audio } from "expo-av";
 
 const AudioPlayerContext = createContext();
 
@@ -7,14 +7,15 @@ export const AudioPlayerProvider = ({ children }) => {
   const [sound, setSound] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPaused, setIsPaused] = useState(false); // Nouvel état pour gérer la pause
+  const [podcast, setPodcast] = useState(null);
 
-  const playPodcast = async (url) => {
+  const playPodcast = async (podcast) => {
     if (sound) {
       await sound.unloadAsync();
     }
 
     const { sound: newSound } = await Audio.Sound.createAsync(
-      { uri: url },
+      { uri: podcast.enclosureUrl },
       { shouldPlay: true }
     );
 
@@ -28,6 +29,7 @@ export const AudioPlayerProvider = ({ children }) => {
       await sound.stopAsync();
       setIsPlaying(false);
       setIsPaused(false); // Réinitialiser l'état de pause
+      setPodcast(null);
     }
   };
 
@@ -48,7 +50,17 @@ export const AudioPlayerProvider = ({ children }) => {
   };
 
   return (
-    <AudioPlayerContext.Provider value={{ isPlaying, isPaused, playPodcast, stopPodcast, pausePodcast, resumePodcast }}>
+    <AudioPlayerContext.Provider
+      value={{
+        isPlaying,
+        isPaused,
+        podcast,
+        playPodcast,
+        stopPodcast,
+        pausePodcast,
+        resumePodcast,
+      }}
+    >
       {children}
     </AudioPlayerContext.Provider>
   );

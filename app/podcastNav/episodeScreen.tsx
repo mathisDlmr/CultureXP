@@ -1,36 +1,51 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, Button } from 'react-native';
-import axios from 'axios';
-import { XMLParser } from 'fast-xml-parser';
-import { useAudioPlayer } from '../../context/AudioPlayerContext';
-import AudioPlayer from '../../components/AudioPlayer';
+import React, { useEffect, useState } from "react";
+import { View, Text, FlatList, StyleSheet, Button } from "react-native";
+import axios from "axios";
+import { XMLParser } from "fast-xml-parser";
+import { useAudioPlayer } from "../../context/AudioPlayerContext";
+import AudioPlayer from "../../components/AudioPlayer";
+import { inspect } from "util";
+import crypto from "crypto-js";
 
 const EpisodesScreen = ({ route }) => {
   const [episodes, setEpisodes] = useState([]);
-  const { rssUrl } = route.params;
+  const { guid } = route.params;
   const { playPodcast, isPlaying, isPaused } = useAudioPlayer();
 
   useEffect(() => {
-    const fetchEpisodesFromRSS = async () => {
+    const fetchEpisodes = async () => {
+      const apiKey = "JC9VAXBYVKVTUKXYEJEM";
+      const apiSecret = "eVKPgnRZs6qB$QedUwEEvgaZaEw2xTyLHZ2UGgMk";
+      const apiHeaderTime = Math.floor(Date.now() / 1000);
+      const hash = crypto
+        .SHA1(apiKey + apiSecret + apiHeaderTime)
+        .toString(crypto.enc.Hex);
+
+      const headers = {
+        "User-Agent": "CulturXP/1.0",
+        "X-Auth-Key": apiKey,
+        "X-Auth-Date": apiHeaderTime.toString(),
+        Authorization: hash,
+      };
+
       try {
-        const response = await axios.get(rssUrl);
-        const parser = new XMLParser();
-        const result = parser.parse(response.data);
+        const response = await axios.get(
+          "https://api.podcastindex.org/api/1.0/episodes/bypodcastguid",
+          {
+            params: { guid },
+            headers: headers,
+          }
+        );
+        console.log(inspect(response.data, false, null, true));
 
-        const items = result.rss.channel.item || [];
-        const parsedEpisodes = items.map((item) => ({
-          title: item.title,
-          audioUrl: item.enclosure ? item.enclosure.url : null,
-        })).filter(ep => ep.audioUrl);
-
-        setEpisodes(parsedEpisodes);
+        setEpisodes(response.data.items);
       } catch (error) {
-        console.error('Erreur lors de la récupération du flux RSS:', error);
+        console.error("Erreur API Podcast Index:", error);
       }
     };
 
-    fetchEpisodesFromRSS();
-  }, [rssUrl]);
+    fetchEpisodes();
+  }, [guid]);
 
   return (
     <View style={styles.container}>
@@ -41,18 +56,19 @@ const EpisodesScreen = ({ route }) => {
         renderItem={({ item }) => (
           <View style={styles.podcastItem}>
             <Text>{item.title}</Text>
-            <Button title="Écouter" onPress={() => playPodcast(item.audioUrl)} />
+            <Button title="Écouter" onPress={() => playPodcast(item)} />
           </View>
         )}
       />
-      {(isPlaying || isPaused) && <AudioPlayer />} {/* Affichez le composant AudioPlayer si isPlaying ou isPaused est vrai */}
+      {(isPlaying || isPaused) && <AudioPlayer />}{" "}
+      {/* Affichez le composant AudioPlayer si isPlaying ou isPaused est vrai */}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20 },
-  sectionTitle: { fontSize: 20, fontWeight: 'bold', marginVertical: 10 },
+  sectionTitle: { fontSize: 20, fontWeight: "bold", marginVertical: 10 },
   podcastItem: { padding: 10, borderBottomWidth: 1 },
 });
 
