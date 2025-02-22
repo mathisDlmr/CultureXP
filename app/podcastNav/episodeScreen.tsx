@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, Button } from 'react-native';
 import axios from 'axios';
-import xml2js from 'react-native-xml2js';
-import { useAudioPlayer } from '@/context/AudioPlayerContext';
+import { XMLParser } from 'fast-xml-parser';
+import { useAudioPlayer } from '../../context/AudioPlayerContext';
 
 const EpisodesScreen = ({ route }) => {
   const [episodes, setEpisodes] = useState([]);
@@ -13,20 +13,16 @@ const EpisodesScreen = ({ route }) => {
     const fetchEpisodesFromRSS = async () => {
       try {
         const response = await axios.get(rssUrl);
-        xml2js.parseString(response.data, (err, result) => {
-          if (err) {
-            console.error('Erreur de parsing XML:', err);
-            return;
-          }
+        const parser = new XMLParser();
+        const result = parser.parse(response.data);
 
-          const items = result.rss.channel[0].item || [];
-          const parsedEpisodes = items.map((item) => ({
-            title: item.title[0],
-            audioUrl: item.enclosure ? item.enclosure[0].$.url : null,
-          })).filter(ep => ep.audioUrl);
+        const items = result.rss.channel.item || [];
+        const parsedEpisodes = items.map((item) => ({
+          title: item.title,
+          audioUrl: item.enclosure ? item.enclosure.url : null,
+        })).filter(ep => ep.audioUrl);
 
-          setEpisodes(parsedEpisodes);
-        });
+        setEpisodes(parsedEpisodes);
       } catch (error) {
         console.error('Erreur lors de la récupération du flux RSS:', error);
       }

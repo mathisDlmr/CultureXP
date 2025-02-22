@@ -11,7 +11,7 @@ export default function CustomNavBar({ state, navigation }) {
     { name: 'homeNav', label: 'Home', Icon: Home },
     { name: 'podcastNav', label: 'Podcasts', Icon: Podcast },
     { name: 'bookNav', label: 'Livres', Icon: BookOpenText },
-    { name: 'MapNav', label: 'Plan', Icon: MapPinHouse },
+    { name: 'mapNav', label: 'Plan', Icon: MapPinHouse },
   ];
 
   return (

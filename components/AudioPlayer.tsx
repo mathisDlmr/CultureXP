@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Button, StyleSheet } from 'react-native';
 import { Audio } from 'expo-av';
-import { useAudioPlayer } from '@/context/AudioPlayerContext';
+import { useAudioPlayer } from '../context/AudioPlayerContext';
 
 const AudioPlayer = () => {
   const [sound, setSound] = React.useState(null);
