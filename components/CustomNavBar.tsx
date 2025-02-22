@@ -11,23 +11,21 @@ export default function CustomNavBar({ state, navigation }) {
     { name: 'homeNav', label: 'Home', Icon: Home },
     { name: 'podcastNav', label: 'Podcasts', Icon: Podcast },
     { name: 'bookNav', label: 'Livres', Icon: BookOpenText },
-    { name: 'MapNav', label: 'Plan', Icon: MapPinHouse },
+    { name: 'mapNav', label: 'Plan', Icon: MapPinHouse },
   ];
 
   return (
     <View
       style={{
         width: '100%',
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#252121',
       }}
     >
       <View
         style={{
-          paddingVertical: 18,
+          paddingVertical: 16,
           marginHorizontal: 15,
-          backgroundColor: '#FFFFFF',
-          borderTopWidth: 1,
-          borderTopColor: '#FFFFFF',
+          backgroundColor: '#252121',
           justifyContent: 'flex-start',
           alignItems: 'center',
           flexDirection: 'row',
@@ -66,7 +64,7 @@ export default function CustomNavBar({ state, navigation }) {
                 flexDirection: 'column',
                 justifyContent: 'flex-start',
                 alignItems: 'center',
-                gap: 12,
+                gap: 8,
               }}
             >
               <tab.Icon

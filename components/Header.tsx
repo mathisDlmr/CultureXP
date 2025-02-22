@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Image } from 'react-native';
 
 const Header = () => {
   const xp = 750;
@@ -7,40 +7,39 @@ const Header = () => {
 
   return (
     <View style={styles.header}>
-      <Text style={styles.title}>CultureApp</Text>
+      <Image source={require('../assets/images/icon.png')} style={{height:60, width:60}}/>
       <View style={styles.xpBar}>
         <View style={[styles.xpFill, { width: `${(xp / maxXp) * 100}%` }]} />
+        <Text style={{fontSize:18, color:"#fff", fontWeight:'700', position:'absolute',top:4,left:15}}>Level 10</Text>
       </View>
-      <Text style={styles.xpText}>{xp} / {maxXp} XP</Text>
+      <View style={{height:40, width:80, backgroundColor:'#4F88A6', borderRadius:10, justifyContent:'center',alignItems:'center'}}>
+        <Text style={{fontSize:20, color:"#fff", fontWeight:'800'}}>{xp} XP</Text>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   header: {
-    backgroundColor: '#6a51ae',
-    padding: 15,
+    backgroundColor: '#252121',
+    justifyContent:'space-around',
+    flexDirection: 'row',
+    height:90,
     alignItems: 'center',
   },
-  title: {
-    color: '#fff',
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
   xpBar: {
-    width: '80%',
-    height: 20,
+    width: '50%',
+    height: 35,
     backgroundColor: '#fff',
-    borderRadius: 10,
-    overflow: 'hidden',
-    marginTop: 10,
+    borderRadius: 25,
   },
   xpFill: {
     height: '100%',
-    backgroundColor: '#ffcb42',
+    borderRadius:25,
+    backgroundColor: '#AAD492',
   },
   xpText: {
-    color: '#fff',
+    color: '#000000',
     marginTop: 5,
   },
 });

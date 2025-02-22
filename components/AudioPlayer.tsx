@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Button, StyleSheet } from 'react-native';
-import { useAudioPlayer } from '@/context/AudioPlayerContext';
+import { useAudioPlayer } from '../context/AudioPlayerContext';
 
 const AudioPlayer = () => {
   const { isPlaying, isPaused, stopPodcast, pausePodcast, resumePodcast } = useAudioPlayer();
