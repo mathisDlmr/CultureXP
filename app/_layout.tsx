@@ -32,6 +32,7 @@ function PodcastStackNavigator() {
 export default function App() {
   return (
     <AudioPlayerProvider>
+      <AudioPlayer />
       <Tab.Navigator
         screenOptions={{ header: () => <Header /> }}
         tabBar={(props) => <CustomNavBar {...props} />}
@@ -39,7 +40,6 @@ export default function App() {
         <Tab.Screen name="homeNav" component={HomeStackNavigator} />
         <Tab.Screen name="podcastNav" component={PodcastStackNavigator} />
       </Tab.Navigator>
-      <AudioPlayer />
     </AudioPlayerProvider>
   );
 }

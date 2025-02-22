@@ -3,11 +3,12 @@ import { View, Text, FlatList, StyleSheet, Button } from 'react-native';
 import axios from 'axios';
 import xml2js from 'react-native-xml2js';
 import { useAudioPlayer } from '@/context/AudioPlayerContext';
+import AudioPlayer from '@/components/AudioPlayer';
 
 const EpisodesScreen = ({ route }) => {
   const [episodes, setEpisodes] = useState([]);
   const { rssUrl } = route.params;
-  const { playPodcast } = useAudioPlayer();
+  const { playPodcast, isPlaying, isPaused } = useAudioPlayer();
 
   useEffect(() => {
     const fetchEpisodesFromRSS = async () => {
@@ -48,6 +49,7 @@ const EpisodesScreen = ({ route }) => {
           </View>
         )}
       />
+      {(isPlaying || isPaused) && <AudioPlayer />} {/* Affichez le composant AudioPlayer si isPlaying ou isPaused est vrai */}
     </View>
   );
 };
