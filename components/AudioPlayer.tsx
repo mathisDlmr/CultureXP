@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, Button, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Button, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { useAudioPlayer } from '../context/AudioPlayerContext';
+import { Play, Pause, SkipForward, SkipBack } from 'lucide-react-native';
 
 const AudioPlayer = () => {
   const {
@@ -24,139 +25,112 @@ const AudioPlayer = () => {
 
   return (
     <TouchableOpacity
-      style={expanded ? styles.expandedPlayer : styles.compactPlayer}
+      style={expanded ? {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: '#252121',
+        padding: 20,
+        paddingLeft:20,
+        justifyContent: 'center',
+        alignItems: 'center',
+      } : {
+        position: 'absolute',
+        bottom: 5,
+        left: 10,
+        right: 10,
+        width: '95%',
+        padding: 10,
+        backgroundColor: '#4F4F4F',
+        borderRadius: 10,
+        borderTopWidth: 1,
+        borderTopColor: '#ccc',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+      }}
       onPress={() => setExpanded(!expanded)}
       activeOpacity={1}
     >
       {expanded ? (
-        <View style={styles.expandedContent}>
-          <Image source={{ uri: currentEpisode.image }} style={styles.expandedImage} />
-          <Text style={styles.expandedTitle}>{currentEpisode.title}</Text>
-          <View style={styles.progressBarContainer}>
-            <View style={[styles.progressBar, { width: `${progress * 100}%` }]} />
+        <ScrollView contentContainerStyle={{ alignItems: 'center', width: '100%', paddingBottom: 20 }}>
+          <Image source={{ uri: currentEpisode.image }} style={{ width: 325, height: 325, borderRadius: 10 }} />
+          <Text style={{ fontSize: 18, marginTop: 10, color: '#fff', fontWeight: '600', alignSelf:'flex-start' }}>{currentEpisode.title}</Text>
+          <View style={{ position:'relative', width: '100%', height: 4, backgroundColor: '#ddd' }}>
+            <View style={{ height: '100%', width: `${progress * 100}%`, backgroundColor: 'green' }} />
           </View>
-          <View style={styles.controls}>
-            <Button title="⏮ 1 min" onPress={seekBackward} />
-            <Button title={isPaused ? "▶️" : "⏸"} onPress={togglePlayPause} />
-            <Button title="⏭ 1 min" onPress={seekForward} />
+          <View style={{ flexDirection: 'row', justifyContent: 'space-around', width: '60%', marginTop: 20 }}>
+            <TouchableOpacity onPress={seekBackward}><SkipBack size={44} color={'#fff'}/></TouchableOpacity>
+            <TouchableOpacity onPress={togglePlayPause} style={{backgroundColor:'#AAD492',borderRadius:100,padding:5}}>{isPaused ? <Play size={40} color={'#ddd'}/> : <Pause size={40} color={'#ddd'}/>}</TouchableOpacity>
+            <TouchableOpacity onPress={seekForward}><SkipForward size={44} color={'#fff'}/></TouchableOpacity>
           </View>
-          <Text style={styles.descriptionLabel}>Description</Text>
-          <Text style={styles.descriptionText}>{currentEpisode.description}</Text>
-        </View>
+          <Text style={{ fontSize: 18, marginTop: 10, fontWeight: '800', alignSelf:'flex-start', color:'#fff' }}>Description</Text>
+          <Text style={{ fontSize: 16, marginTop: 5, alignSelf:'flex-start', color:'#fff' }}>{currentEpisode.description}</Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              width:'100%'
+            }}
+          >
+            <Text style={{ fontSize: 18, marginTop: 20, fontWeight: '800', alignSelf:'flex-start', color:'#fff' }}>Avis(2)</Text>
+            <Text style={{ fontSize: 18, marginTop: 20, fontWeight: '800', alignSelf:'flex-start', color:'#fff' }}>4,2☆</Text>
+          </View>
+          <View
+            style={{
+              flexDirection: 'column',
+              alignSelf: 'flex-start',
+            }}
+          >
+            <View
+              style={{
+                flexDirection: 'row',
+                alignSelf: 'flex-start',
+                marginTop: 15
+              }}
+            >
+              <Text style={{ fontSize: 16, fontWeight: '800', color:'#fff' }}>QuentinDu72</Text>
+              <Text style={{ fontSize: 12, fontWeight: '400',  color:'#fff' }}>, le 2 janvier 2024</Text>
+            </View>
+            <Text style={{ fontSize: 14, fontWeight: '400',  color:'#fff' }}>J’ai trop aimé ces infos ! Bravo</Text>
+          </View>
+          <View
+            style={{
+              flexDirection: 'column',
+              alignSelf: 'flex-start',
+            }}
+          >
+            <View
+              style={{
+                flexDirection: 'row',
+                alignSelf: 'flex-start',
+                marginTop: 5
+              }}
+            >
+              <Text style={{ fontSize: 16, fontWeight: '800', color:'#fff' }}>Emma2.0</Text>
+              <Text style={{ fontSize: 12, fontWeight: '400',  color:'#fff' }}>, le 5 janvier 2024</Text>
+            </View>
+            <Text style={{ fontSize: 14, fontWeight: '400',  color:'#fff' }}>J’adore ce Podcast !</Text>
+          </View>
+        </ScrollView>
       ) : (
-        <View style={styles.compactContent}>
-          <Image source={{ uri: currentEpisode.image }} style={styles.compactImage} />
-          <View style={styles.textContainer}>
-            <Text style={styles.artistName}>{currentEpisode.artist}</Text>
-            <Text style={styles.episodeTitle}>{currentEpisode.title}</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginBottom:5 }}>
+          <Image source={{ uri: currentEpisode.image }} style={{ width: 35, height: 35, borderRadius: 5 }} />
+          <View style={{ flex: 1, marginLeft: 10, marginHorizontal: 10, maxWidth: '90%' }}>
+            <Text style={{ fontSize: 16, color: '#fff' }}>{currentEpisode.title}</Text>
           </View>
-          <View style={styles.compactControls}>
-            <Button title="■" onPress={stopPodcast} />
-            <Button title={isPaused ? "▶️" : "⏸"} onPress={togglePlayPause} />
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <TouchableOpacity onPress={togglePlayPause}>{isPaused ? <Play size={26} color={'#ddd'}/> : <Pause size={26} color={'#ddd'}/>}</TouchableOpacity>
           </View>
-          <View style={styles.progressBarContainer}>
-            <View style={[styles.progressBar, { width: `${progress * 100}%` }]} />
+          <View style={{ position: 'absolute', bottom: -10, left: 0, right: 0, height: 4, backgroundColor: '#ddd' }}>
+            <View style={{ height: '100%', width: `${progress * 100}%`, backgroundColor: 'green' }} />
           </View>
         </View>
       )}
     </TouchableOpacity>
   );
 };
-
-const styles = StyleSheet.create({
-  compactPlayer: {
-    position: 'absolute',
-    bottom: 5,
-    left: 10,
-    right: 10,
-    width: '95%',
-    padding: 10,
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    borderTopWidth: 1,
-    borderTopColor: '#ccc',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  compactContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-  },
-  compactImage: {
-    width: 32,
-    height: 32,
-    borderRadius: 5,
-  },
-  textContainer: {
-    flex: 1,
-    marginLeft: 10,
-  },
-  artistName: {
-    fontSize: 18,
-  },
-  episodeTitle: {
-    fontSize: 14,
-    color: '#555',
-  },
-  compactControls: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  progressBarContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 4,
-    backgroundColor: '#ddd',
-  },
-  progressBar: {
-    height: '100%',
-    backgroundColor: 'green',
-  },
-  expandedPlayer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: '#fff',
-    padding: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  expandedContent: {
-    alignItems: 'center',
-    width: '100%',
-  },
-  expandedImage: {
-    width: 200,
-    height: 200,
-    borderRadius: 10,
-  },
-  expandedTitle: {
-    fontSize: 20,
-    marginTop: 10,
-    textAlign: 'center',
-  },
-  controls: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '60%',
-    marginTop: 20,
-  },
-  descriptionLabel: {
-    fontSize: 18,
-    marginTop: 20,
-    fontWeight: 'bold',
-  },
-  descriptionText: {
-    fontSize: 16,
-    textAlign: 'center',
-    marginTop: 10,
-  },
-});
 
 export default AudioPlayer;

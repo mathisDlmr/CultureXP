@@ -12,23 +12,28 @@ export const AudioPlayerProvider = ({ children }) => {
   const [isPaused, setIsPaused] = useState(false);
   const [currentEpisode, setCurrentEpisode] = useState({
     title: '',
-    artist: '',
     image: '',
     description: '',
   });
   const [progress, setProgress] = useState(0);
   const soundRef = useRef(null);
 
-  const playPodcast = async (url) => {
+  const playPodcast = async (episode) => {
     if (soundRef.current) {
       soundRef.current.unloadAsync();
     }
-    const { sound } = await Audio.Sound.createAsync({ uri: url });
+    const { sound } = await Audio.Sound.createAsync({ uri: episode.audioUrl });
     soundRef.current = sound;
     sound.playAsync();
     setIsPlaying(true);
     setIsPaused(false);
+    setCurrentEpisode({
+      title: episode.title,
+      image: episode.image,
+      description: episode.description || '',
+    });
   };
+  
 
   const pausePodcast = async () => {
     if (soundRef.current) {

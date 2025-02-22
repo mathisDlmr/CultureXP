@@ -3,6 +3,7 @@ import { View, Text, FlatList, StyleSheet, Button, TouchableOpacity, Image } fro
 import axios from 'axios';
 import { useAudioPlayer } from '../../context/AudioPlayerContext';
 import AudioPlayer from '../../components/AudioPlayer';
+import { DessertIcon } from 'lucide-react-native';
 
 const EpisodesScreen = ({ route }) => {
   const [episodes, setEpisodes] = useState([]);
@@ -19,6 +20,7 @@ const EpisodesScreen = ({ route }) => {
           title: item.title,
           audioUrl: item.enclosure.link,
           image: item.thumbnail || '', 
+          description: item.description != '' ? item.description : item.content
         })));
       } catch (error) {
         console.error("Erreur lors de la récupération du flux RSS:", error);
@@ -36,14 +38,19 @@ const EpisodesScreen = ({ route }) => {
         data={episodes}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.podcastItem} onPress={() => playPodcast(item.audioUrl)}>
-            <View style={styles.podcastDetails}>
-              <Text style={styles.podcastTitle}>{item.title}</Text>
-            </View>
-            <TouchableOpacity style={styles.menuButton}>
-              <Text style={styles.menuText}>⋮</Text>
-            </TouchableOpacity>
+          <TouchableOpacity style={styles.podcastItem} onPress={() => playPodcast({
+            title: item.title,
+            audioUrl: item.audioUrl,
+            image: podcastImage,
+            description: item.description
+          })}>
+          <View style={styles.podcastDetails}>
+            <Text style={styles.podcastTitle}>{item.title}</Text>
+          </View>
+          <TouchableOpacity style={styles.menuButton}>
+            <Text style={styles.menuText}>⋮</Text>
           </TouchableOpacity>
+        </TouchableOpacity>
         )}
       />
       {(isPlaying || isPaused) && <AudioPlayer />}
