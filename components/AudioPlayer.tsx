@@ -1,54 +1,41 @@
 import React from 'react';
 import { View, Button, StyleSheet } from 'react-native';
-import { Audio } from 'expo-av';
 import { useAudioPlayer } from '../context/AudioPlayerContext';
 
 const AudioPlayer = () => {
-  const [sound, setSound] = React.useState(null);
-  const { isPlaying, setIsPlaying } = useAudioPlayer();
+  const { isPlaying, isPaused, stopPodcast, pausePodcast, resumePodcast } = useAudioPlayer();
 
-  const playPodcast = async (url) => {
-    if (sound) {
-      await sound.unloadAsync();
-    }
-
-    const { sound: newSound } = await Audio.Sound.createAsync(
-      { uri: url },
-      { shouldPlay: true }
-    );
-
-    setSound(newSound);
-    setIsPlaying(true);
-  };
-
-  const stopPodcast = async () => {
-    if (sound) {
-      await sound.stopAsync();
-      setIsPlaying(false);
-    }
-  };
-
-  const pausePodcast = async () => {
-    if (sound) {
-      await sound.pauseAsync();
-      setIsPlaying(false);
-    }
-  };
-
-  if (!isPlaying) {
+  // Afficher les boutons si le podcast est en cours de lecture ou en pause
+  if (!isPlaying && !isPaused) {
     return null;
   }
 
   return (
     <View style={styles.audioPlayer}>
       <Button title="Arrêter" onPress={stopPodcast} />
-      <Button title="Pause" onPress={pausePodcast} />
+      <Button
+        title={isPaused ? "Reprendre" : "Pause"}
+        onPress={isPaused ? resumePodcast : pausePodcast}
+      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  audioPlayer: { position: 'absolute', bottom: 90, width: '100%', padding: 10, backgroundColor: '#fff' },
+  audioPlayer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    width: '100%',
+    padding: 10,
+    backgroundColor: '#fff',
+    borderTopWidth: 1,
+    borderTopColor: '#ccc',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
 });
 
 export default AudioPlayer;

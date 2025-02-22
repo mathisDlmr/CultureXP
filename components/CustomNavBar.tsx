@@ -18,16 +18,14 @@ export default function CustomNavBar({ state, navigation }) {
     <View
       style={{
         width: '100%',
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#252121',
       }}
     >
       <View
         style={{
-          paddingVertical: 18,
+          paddingVertical: 16,
           marginHorizontal: 15,
-          backgroundColor: '#FFFFFF',
-          borderTopWidth: 1,
-          borderTopColor: '#FFFFFF',
+          backgroundColor: '#252121',
           justifyContent: 'flex-start',
           alignItems: 'center',
           flexDirection: 'row',
@@ -66,7 +64,7 @@ export default function CustomNavBar({ state, navigation }) {
                 flexDirection: 'column',
                 justifyContent: 'flex-start',
                 alignItems: 'center',
-                gap: 12,
+                gap: 8,
               }}
             >
               <tab.Icon

@@ -6,6 +6,7 @@ const AudioPlayerContext = createContext();
 export const AudioPlayerProvider = ({ children }) => {
   const [sound, setSound] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isPaused, setIsPaused] = useState(false); // Nouvel état pour gérer la pause
 
   const playPodcast = async (url) => {
     if (sound) {
@@ -19,24 +20,35 @@ export const AudioPlayerProvider = ({ children }) => {
 
     setSound(newSound);
     setIsPlaying(true);
+    setIsPaused(false); // Réinitialiser l'état de pause
   };
 
   const stopPodcast = async () => {
     if (sound) {
       await sound.stopAsync();
       setIsPlaying(false);
+      setIsPaused(false); // Réinitialiser l'état de pause
     }
   };
 
   const pausePodcast = async () => {
-    if (sound) {
+    if (sound && isPlaying) {
       await sound.pauseAsync();
       setIsPlaying(false);
+      setIsPaused(true); // Mettre à jour l'état de pause
+    }
+  };
+
+  const resumePodcast = async () => {
+    if (sound && isPaused) {
+      await sound.playAsync();
+      setIsPlaying(true);
+      setIsPaused(false); // Réinitialiser l'état de pause
     }
   };
 
   return (
-    <AudioPlayerContext.Provider value={{ isPlaying, playPodcast, stopPodcast, pausePodcast }}>
+    <AudioPlayerContext.Provider value={{ isPlaying, isPaused, playPodcast, stopPodcast, pausePodcast, resumePodcast }}>
       {children}
     </AudioPlayerContext.Provider>
   );

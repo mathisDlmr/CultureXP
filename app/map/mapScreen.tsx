@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, TextInput, TouchableOpacity, Text } from 'react-native';
-import { Landmark, Library, Drama } from 'lucide-react-native';
+import React, { useEffect, useState, useRef } from 'react';
+import { StyleSheet, View, TextInput, TouchableOpacity, Text, Animated } from 'react-native';
+import { Landmark, Library, Drama, SlidersHorizontal, Earth } from 'lucide-react-native';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import axios from 'axios';
@@ -10,6 +10,8 @@ const MapScreen = () => {
   const [places, setPlaces] = useState([]);
   const [filter, setFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [isFilterVisible, setIsFilterVisible] = useState(false);
+  const filterAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     const requestLocationPermission = async () => {
@@ -48,12 +50,12 @@ const MapScreen = () => {
         latitude: element.lat,
         longitude: element.lon,
         type: element.tags.amenity === "museum"
-        ? "Musée gratuit -24 ans, ✨ 200XP" 
-        : element.tags.amenity === "library"
-        ? "Librairie en libre accès, ✨ 50XP" 
-        : element.tags.amenity === "theatre"
-        ? "Théatre gratuit -18 ans, ✨ 100XP" 
-        : "Lieu Culturel, ✨ 50XP",
+          ? "Musée gratuit -24 ans, ✨ 200XP"
+          : element.tags.amenity === "library"
+          ? "Librairie en libre accès, ✨ 50XP"
+          : element.tags.amenity === "theatre"
+          ? "Théâtre gratuit -18 ans, ✨ 100XP"
+          : "Lieu Culturel, ✨ 50XP",
         oldType: element.tags.tourism || element.tags.amenity,
       }));
 
@@ -76,24 +78,25 @@ const MapScreen = () => {
   const getMarkerIcon = (oldType) => {
     let icon;
     let backgroundColor;
-  
+
     switch (oldType) {
       case 'museum':
         icon = <Landmark size={24} color="#FFFFFF" />;
-        backgroundColor = '#3585CD';
+        backgroundColor = '#4F88A6';
         break;
       case 'library':
         icon = <Library size={24} color="#FFFFFF" />;
-        backgroundColor = '#33FF57';
+        backgroundColor = '#BFDF94';
         break;
       case 'theatre':
         icon = <Drama size={24} color="#FFFFFF" />;
-        backgroundColor = '#FF5733';
+        backgroundColor = '#E64034';
         break;
       default:
-        return null;
-    }
-  
+        icon = <Earth size={24} color="#FFFFFF" />;
+        backgroundColor = '#68AF47';
+      }
+
     return (
       <View style={styles.pinContainer}>
         <View style={[styles.pinCircle, { backgroundColor }]}>
@@ -102,7 +105,21 @@ const MapScreen = () => {
         <View style={[styles.pinTriangle, { borderTopColor: backgroundColor }]} />
       </View>
     );
-  }
+  };
+
+  const toggleFilterVisibility = () => {
+    setIsFilterVisible(!isFilterVisible);
+    Animated.timing(filterAnim, {
+      toValue: isFilterVisible ? 0 : 1,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
+  };
+
+  const filterButtonsHeight = filterAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 169],
+  });
 
   return (
     <View style={styles.container}>
@@ -129,7 +146,18 @@ const MapScreen = () => {
           ))}
         </MapView>
       )}
-      <View style={styles.filterContainer}>
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Rechercher un lieu"
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+        />
+      </View>
+      <TouchableOpacity style={styles.filterIconContainer} onPress={toggleFilterVisibility}>
+        <SlidersHorizontal size={32} color="#FFFFFF" />;
+      </TouchableOpacity>
+      <Animated.View style={[styles.filterButtonsContainer, { height: filterButtonsHeight }]}>
         <TouchableOpacity onPress={() => setFilter('all')} style={styles.filterButton}>
           <Text style={styles.filterText}>Tous</Text>
         </TouchableOpacity>
@@ -142,15 +170,7 @@ const MapScreen = () => {
         <TouchableOpacity onPress={() => setFilter('theatre')} style={styles.filterButton}>
           <Text style={styles.filterText}>Théâtres</Text>
         </TouchableOpacity>
-      </View>
-      <View style={styles.searchContainer}>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Rechercher un lieu"
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-        />
-      </View>
+      </Animated.View>
     </View>
   );
 };
@@ -237,38 +257,60 @@ const darkMapStyle = [
 ];
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
+  container: { flex: 1, backgroundColor: '#121212' },
   map: { width: '100%', height: '100%' },
-  filterContainer: {
+  searchContainer: {
     position: 'absolute',
-    bottom: 20,
+    bottom: 15,
+    left: 20,
+    right: 90,
+    height: 40,
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    justifyContent: 'center',
+    paddingLeft: 15,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 16,
+  },
+  filterIconContainer: {
+    position: 'absolute',
+    bottom: 10,
     right: 20,
-    flexDirection: 'column',
-    alignItems: 'flex-end',
+    width: 55,
+    height: 55,
+    backgroundColor: '#344E73',
+    borderRadius: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  filterButtonsContainer: {
+    position: 'absolute',
+    bottom: 70,
+    right: 20,
+    width: 160,
+    backgroundColor: '#344E73',
+    borderRadius: 10,
+    overflow: 'hidden',
+    justifyContent: 'space-around',
+    alignItems: 'center',
   },
   filterButton: {
-    marginVertical: 5,
+    width: '100%',
     padding: 10,
-    backgroundColor: '#fff',
-    borderRadius: 5,
+    height:42.5,
+    borderBottomWidth: 1,
+    borderBottomColor: '#fff',
   },
   filterText: {
     fontSize: 16,
-  },
-  searchContainer: {
-    position: 'absolute',
-    bottom: 20,
-    left: 20,
-    right: 20,
-  },
-  searchInput: {
-    padding: 10,
-    backgroundColor: '#fff',
-    borderRadius: 5,
+    color: '#fff',
+    textAlign: 'center',
   },
   pinContainer: {
     alignItems: 'center',
-    paddingBottom: 10, 
+    paddingBottom: 10,
   },
   pinCircle: {
     width: 40,
