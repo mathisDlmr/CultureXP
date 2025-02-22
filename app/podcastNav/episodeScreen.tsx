@@ -14,6 +14,7 @@ const EpisodesScreen = ({ route }) => {
     const fetchEpisodesFromRSS = async () => {
       try {
         const response = await axios.get(rssUrl);
+        
         const parser = new XMLParser();
         const result = parser.parse(response.data);
 

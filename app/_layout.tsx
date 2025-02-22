@@ -10,10 +10,19 @@ import CustomNavBar from '../components/CustomNavBar';
 import AudioPlayer from '../components/AudioPlayer';
 import MapScreen from './map/mapScreen';
 import BookScreen from './book/bookScreen';
+import QuestScreen from './quest/questScreen';
 import { AudioPlayerProvider } from '../context/AudioPlayerContext';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
+
+function QuestStackNavigator() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="questScreen" component={QuestScreen} options={{ headerShown: false }} />
+    </Stack.Navigator>
+  );
+}
 
 function HomeStackNavigator() {
   return (
@@ -49,6 +58,7 @@ export default function App() {
           tabBar={(props) => <CustomNavBar {...props} />}
         >
           <Tab.Screen name="homeNav" component={HomeStackNavigator} />
+          <Tab.Screen name="questNav" component={QuestStackNavigator} />
           <Tab.Screen name="podcastNav" component={PodcastStackNavigator} />
           <Tab.Screen name="bookNav" component={BookScreen} />
           <Tab.Screen name="mapNav" component={MapStackNavigator} />
