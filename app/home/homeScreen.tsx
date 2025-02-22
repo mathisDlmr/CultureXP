@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { View, Text, Image, FlatList, StyleSheet, Dimensions, Animated, ScrollView } from 'react-native';
+import { View, Text, Image, FlatList, StyleSheet, Dimensions, Animated, ScrollView, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const { width, height } = Dimensions.get('window');
 
@@ -34,6 +35,8 @@ const HomeScreen = () => {
   const flatListRef = useRef(null);
   const scrollX = useRef(new Animated.Value(0)).current;
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  const navigation = useNavigation();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -116,7 +119,7 @@ const HomeScreen = () => {
         horizontal
         data={recommendedTitles}
         renderItem={({ item }) => (
-          <Image source={{ uri: item.url }} style={styles.recommendedImage} />
+          <TouchableOpacity onPress={()=>{navigation.navigate("achieveScreen")}}><Image source={{ uri: item.url }} style={styles.recommendedImage}/></TouchableOpacity>
         )}
         keyExtractor={(item, index) => index.toString()}
       />
@@ -187,11 +190,10 @@ const styles = StyleSheet.create({
     margin: 5,
   },
   singleImage: {
-    width: '95%',
+    width: '100%',
     height: height * 0.25,
     borderRadius:10,
     alignSelf: 'center',
-    marginVertical: 5,
   },
   singleImageTextContainer: {
     position: 'absolute',

@@ -77,7 +77,7 @@ export default function CustomNavBar({ state, navigation }) {
                   fontSize: 14,
                   fontWeight: '500',
                   textAlign: 'center',
-                  marginBottom: 2, // monte un peu le texte
+                  marginBottom: 2, 
                 }}
                 numberOfLines={1}
                 adjustsFontSizeToFit

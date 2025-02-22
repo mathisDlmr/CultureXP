@@ -1,60 +1,69 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, Button } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Button, TouchableOpacity, Image } from 'react-native';
 import axios from 'axios';
-import { XMLParser } from 'fast-xml-parser';
 import { useAudioPlayer } from '../../context/AudioPlayerContext';
 import AudioPlayer from '../../components/AudioPlayer';
 
 const EpisodesScreen = ({ route }) => {
   const [episodes, setEpisodes] = useState([]);
-  const { rssUrl } = route.params;
+  const { rssUrl, podcastImage, podcastTitle } = route.params;
   const { playPodcast, isPlaying, isPaused } = useAudioPlayer();
 
+  const url = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+
   useEffect(() => {
-    const fetchEpisodesFromRSS = async () => {
+    const fetchEpisodesFromAPI = async () => {
       try {
-        const response = await axios.get(rssUrl);
-        
-        const parser = new XMLParser();
-        const result = parser.parse(response.data);
-
-        const items = result.rss.channel.item || [];
-        const parsedEpisodes = items.map((item) => ({
+        const response = await axios.get(url);
+        setEpisodes(response.data.items.map(item => ({
           title: item.title,
-          audioUrl: item.enclosure ? item.enclosure.url : null,
-        })).filter(ep => ep.audioUrl);
-
-        setEpisodes(parsedEpisodes);
+          audioUrl: item.enclosure.link,
+          image: item.thumbnail || '', 
+        })));
       } catch (error) {
-        console.error('Erreur lors de la récupération du flux RSS:', error);
+        console.error("Erreur lors de la récupération du flux RSS:", error);
       }
     };
-
-    fetchEpisodesFromRSS();
-  }, [rssUrl]);
+  
+    fetchEpisodesFromAPI();
+  }, [rssUrl]);  
 
   return (
     <View style={styles.container}>
-      <Text style={styles.sectionTitle}>Épisodes</Text>
+      <Image source={{uri:podcastImage}} style={{height:192, aspectRatio:1, borderRadius:12, alignSelf: 'center',paddingVertical: 16}}/>
+      <Text style={styles.sectionTitle}>{podcastTitle}</Text>
       <FlatList
         data={episodes}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
-          <View style={styles.podcastItem}>
-            <Text>{item.title}</Text>
-            <Button title="Écouter" onPress={() => playPodcast(item.audioUrl)} />
-          </View>
+          <TouchableOpacity style={styles.podcastItem} onPress={() => playPodcast(item.audioUrl)}>
+            <View style={styles.podcastDetails}>
+              <Text style={styles.podcastTitle}>{item.title}</Text>
+            </View>
+            <TouchableOpacity style={styles.menuButton}>
+              <Text style={styles.menuText}>⋮</Text>
+            </TouchableOpacity>
+          </TouchableOpacity>
         )}
       />
-      {(isPlaying || isPaused) && <AudioPlayer />} {/* Affichez le composant AudioPlayer si isPlaying ou isPaused est vrai */}
+      {(isPlaying || isPaused) && <AudioPlayer />}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20 },
-  sectionTitle: { fontSize: 20, fontWeight: 'bold', marginVertical: 10 },
-  podcastItem: { padding: 10, borderBottomWidth: 1 },
+  container: { flex: 1, backgroundColor: '#252121' },
+  sectionTitle: { fontSize: 26, fontWeight: '800', margin: 10, color: '#fff', alignSelf:'center', marginBottom:16 },
+  podcastItem: {
+    padding: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  podcastDetails: { flex: 1, marginLeft: 10 },
+  podcastTitle: { fontSize: 16, fontWeight: '500', color: '#fff' },
+  menuButton: { padding: 10 },
+  menuText: { fontSize: 28, color: '#aaa' },
 });
 
 export default EpisodesScreen;
