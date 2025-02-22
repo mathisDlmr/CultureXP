@@ -1,7 +1,9 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const Header = () => {
+  const navigation = useNavigation();
   const xp = 750;
   const maxXp = 1500;
 
@@ -12,9 +14,12 @@ const Header = () => {
         <View style={[styles.xpFill, { width: `${(xp / maxXp) * 100}%` }]} />
         <Text style={{fontSize:18, color:"#fff", fontWeight:'700', position:'absolute',top:4,left:15}}>Level 10</Text>
       </View>
-      <View style={{height:40, width:80, backgroundColor:'#4F88A6', borderRadius:10, justifyContent:'center',alignItems:'center'}}>
+      <TouchableOpacity 
+        style={{height:40, width:80, backgroundColor:'#4F88A6', borderRadius:10, justifyContent:'center',alignItems:'center'}}
+        onPress={() => navigation.navigate('questNav')}
+      >
         <Text style={{fontSize:20, color:"#fff", fontWeight:'800'}}>{xp} XP</Text>
-      </View>
+      </TouchableOpacity>
     </View>
   );
 };
