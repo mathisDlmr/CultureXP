@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, FlatList, StyleSheet, Button, TouchableOpacity, Image } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import axios from 'axios';
 import crypto from 'crypto-js';
 import {
@@ -8,7 +8,8 @@ import {
   Beaker as ScienceIcon,
   BookOpen as PhilosophyIcon,
   Landmark as PoliticsIcon,
-  Palette as ArtIcon
+  Palette as ArtIcon,
+  Filter
 } from 'lucide-react-native';
 
 const PodcastScreen = ({ navigation }) => {
@@ -16,6 +17,15 @@ const PodcastScreen = ({ navigation }) => {
   const [selectedInterests, setSelectedInterests] = useState([]);
   const [showOverlay, setShowOverlay] = useState(true);
   const [iconColors, setIconColors] = useState({});
+  const [xpValues, setXpValues] = useState({});
+
+  useEffect(() => {
+    const initialXpValues = {};
+    podcasts.forEach((podcast, index) => {
+      initialXpValues[index] = 3 + Math.floor(Math.random() * 3);
+    });
+    setXpValues(initialXpValues);
+  }, [podcasts]);
 
   const searchPodcasts = async (subjects) => {
     const apiKey = 'JC9VAXBYVKVTUKXYEJEM';
@@ -81,41 +91,56 @@ const PodcastScreen = ({ navigation }) => {
     }
   };
 
+  const resetOverlay = () => {
+    setSelectedInterests([]);
+    setIconColors({});
+    setShowOverlay(true);
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.sectionTitle}>Vous pourriez aimer</Text>
+      <View style={styles.header}>
+        <Text style={styles.sectionTitle}>Vous pourriez aimer</Text>
+        <TouchableOpacity style={styles.subjectsButton} onPress={resetOverlay}>
+          <Filter size={32} color={'#fff'}/>
+        </TouchableOpacity>
+      </View>
       <FlatList
         data={podcasts}
         keyExtractor={(item, index) => item.id + '-' + index}
-        renderItem={({ item }) => (
-        <TouchableOpacity
-          style={styles.podcastItem}
-          onPress={() => navigation.navigate('EpisodeScreen', { rssUrl: item.url, podcastImage: item.image, podcastTitle : item.title })}
-        >
-          <View style={styles.imageContainer}>
-            <Text style={styles.placeholderText}>?</Text>
-            <Image
-              source={{ uri: item.image }}
-              style={styles.podcastImage}
-            />
-          </View>
-          <View style={styles.podcastDetails}>
-            <Text style={styles.podcastTitle}>{item.title}</Text>
-            <Text style={styles.podcastAuthor}>{item.author}</Text>
-          </View>
-          <View
-            style={{
-              justifyContent:'center',
-              alignItems:'center',
-              flexDirection: 'row',
-              padding:6,
-              borderRadius:5,
-              gap:8
-            }}
+        renderItem={({ item, index }) => (
+          <TouchableOpacity
+            style={styles.podcastItem}
+            onPress={() => navigation.navigate('EpisodeScreen', { rssUrl: item.url, podcastImage: item.image, podcastTitle: item.title })}
           >
-              <View style={{backgroundColor:'#083A44', padding: 6, borderRadius:12}}><Text style={{fontSize:20, fontWeight:'800',color:'#fff'}}>2-{3+Math.floor(Math.random()*3)}XP</Text></View>
-          </View>
-        </TouchableOpacity>
+            <View style={styles.imageContainer}>
+              <Text style={styles.placeholderText}>?</Text>
+              <Image
+                source={{ uri: item.image }}
+                style={styles.podcastImage}
+              />
+            </View>
+            <View style={styles.podcastDetails}>
+              <Text style={styles.podcastTitle}>{item.title}</Text>
+              <Text style={styles.podcastAuthor}>{item.author}</Text>
+            </View>
+            <View
+              style={{
+                justifyContent:'center',
+                alignItems:'center',
+                flexDirection: 'row',
+                padding:6,
+                borderRadius:5,
+                gap:8
+              }}
+            >
+              <View style={{backgroundColor:'#083A44', padding: 6, borderRadius:12}}>
+                <Text style={{fontSize:20, fontWeight:'800',color:'#fff'}}>
+                  2-{xpValues[index]}XP
+                </Text>
+              </View>
+            </View>
+          </TouchableOpacity>
         )}
       />
 
@@ -157,7 +182,15 @@ const PodcastScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#252121' },
-  sectionTitle: { fontSize: 24, fontWeight: '800', margin: 10, color: '#fff' },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+  },
+  sectionTitle: { fontSize: 24, fontWeight: '800', color: '#fff' },
+  subjectsButton: { padding: 10 },
+  subjectsButtonText: { fontSize: 18, color: '#FFFFFF', fontWeight: '600' },
   podcastItem: {
     padding: 10,
     flexDirection: 'row',
@@ -193,8 +226,6 @@ const styles = StyleSheet.create({
   podcastDetails: { flex: 1, marginLeft: 10 },
   podcastTitle: { fontSize: 20, fontWeight: '600', color: '#fff' },
   podcastAuthor: { fontSize: 16, fontWeight: '400', color: '#aaa' },
-  menuButton: { padding: 10 },
-  menuText: { fontSize: 28, color: '#aaa' },
   overlay: {
     position: 'absolute',
     height: '100%',
@@ -223,10 +254,6 @@ const styles = StyleSheet.create({
   },
   selectedInterestBox: {
     borderColor: '#AAD492',
-  },
-  interestIcon: {
-    fontSize: 40,
-    color: '#4F88A6',
   },
   interestText: {
     color: '#4F88A6',

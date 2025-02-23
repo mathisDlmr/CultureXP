@@ -16,6 +16,7 @@ export const AudioPlayerProvider = ({ children }) => {
     description: '',
   });
   const [progress, setProgress] = useState(0);
+  const [maxProgress, setMaxProgress] = useState(0);
   const soundRef = useRef(null);
 
   const playPodcast = async (episode) => {
@@ -33,7 +34,6 @@ export const AudioPlayerProvider = ({ children }) => {
       description: episode.description || '',
     });
   };
-  
 
   const pausePodcast = async () => {
     if (soundRef.current) {
@@ -56,6 +56,7 @@ export const AudioPlayerProvider = ({ children }) => {
       setIsPlaying(false);
       setIsPaused(false);
       setProgress(0);
+      setMaxProgress(0);
     }
   };
 
@@ -71,7 +72,9 @@ export const AudioPlayerProvider = ({ children }) => {
     if (soundRef.current) {
       const status = await soundRef.current.getStatusAsync();
       const newPosition = Math.min(status.positionMillis + 60000, status.durationMillis);
-      soundRef.current.setPositionAsync(newPosition);
+      if (newPosition <= maxProgress * status.durationMillis) {
+        soundRef.current.setPositionAsync(newPosition);
+      }
     }
   };
 
@@ -88,14 +91,18 @@ export const AudioPlayerProvider = ({ children }) => {
       if (soundRef.current) {
         const status = await soundRef.current.getStatusAsync();
         if (status.isLoaded) {
-          setProgress(status.positionMillis / status.durationMillis);
+          const currentProgress = status.positionMillis / status.durationMillis;
+          setProgress(currentProgress);
+          if (currentProgress > maxProgress) {
+            setMaxProgress(currentProgress);
+          }
         }
       }
     };
 
     const interval = setInterval(updateProgress, 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [maxProgress]);
 
   return (
     <AudioPlayerContext.Provider
@@ -104,6 +111,7 @@ export const AudioPlayerProvider = ({ children }) => {
         isPaused,
         currentEpisode,
         progress,
+        maxProgress,
         playPodcast,
         pausePodcast,
         resumePodcast,

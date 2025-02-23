@@ -4,6 +4,7 @@ import { Film, Ticket, Music, Palette } from 'lucide-react-native';
 import BarreProgression from '../../components/BarreProgression';
 import ClaimButton from '../../components/ClaimButton';
 import Svg, { Circle } from 'react-native-svg';
+import { useNavigation } from "expo-router";
 
 // Circular Progress Component
 const CircularProgress = ({ progress, size, strokeWidth, color }) => {
@@ -29,8 +30,8 @@ const CircularProgress = ({ progress, size, strokeWidth, color }) => {
 };
 
 export default function QuestScreen() {
-    const xp = 750;
-    const maxXp = 2000;
+    const xp = 150;
+    const maxXp = 400;
     const progress = xp / maxXp;
     const xpRemaining = maxXp - xp;
 
@@ -38,7 +39,9 @@ export default function QuestScreen() {
     const dailyQuestProgress2 = 0.5;
     const dailyQuestProgress3 = 1.0;
 
-    const rewardsProgress = [0.9, 0.3, 0.8, 1.0]; // Example progress values for rewards
+    const  navigation = useNavigation();
+
+    const rewardsProgress = [0.9, 0.3, 0.8, 1.0]; 
     const rewardLinks = [
         "https://www.cinemasgaumontpathe.com/",
         "https://www.fnac.com/",
@@ -48,7 +51,7 @@ export default function QuestScreen() {
 
     const handleRewardPress = (index) => {
         if (rewardsProgress[index] === 1.0) {
-            Linking.openURL(rewardLinks[index]);
+            navigation.navigate("shopNav");
         }
     };
 
@@ -65,8 +68,8 @@ export default function QuestScreen() {
                 </View>
                 <Text style={styles.headerText}>Quêtes Journalières</Text>
                 <View style={styles.greenRectangle}>
-                    <View style={styles.progressBarContainer}>
-                        <Text style={styles.questText}>Écouter un podcast ({(dailyQuestProgress1 * 100).toFixed(0)}%)</Text>
+                    <View style={{ width: '100%', marginTop: 20 }}>
+                        <Text style={styles.questText}>Écouter 30 min de podcast - 2XP ({(dailyQuestProgress1 * 100).toFixed(0)}%)</Text>
                         <View style={styles.progressBarWithButton}>
                             <BarreProgression backgroundColor="white" progressColor="#4F88A6" progress={dailyQuestProgress1} />
                             <ClaimButton
@@ -75,8 +78,8 @@ export default function QuestScreen() {
                             />
                         </View>
                     </View>
-                    <View style={styles.progressBarContainer}>
-                        <Text style={styles.questText}>30 min d'audiobook ({(dailyQuestProgress2 * 100).toFixed(0)}%)</Text>
+                    <View style={{ width: '100%', marginTop: 20 }}>
+                        <Text style={styles.questText}>Lire 25 pages d'un livre  - 2XP({(dailyQuestProgress2 * 100).toFixed(0)}%)</Text>
                         <View style={styles.progressBarWithButton}>
                             <BarreProgression backgroundColor="white" progressColor="#4F88A6" progress={dailyQuestProgress2} />
                             <ClaimButton
@@ -85,8 +88,8 @@ export default function QuestScreen() {
                             />
                         </View>
                     </View>
-                    <View style={styles.progressBarContainer}>
-                        <Text style={styles.questText}>Laisser un avis ({(dailyQuestProgress3 * 100).toFixed(0)}%)</Text>
+                    <View style={{ width: '70%', marginTop: 20 }}>
+                        <Text style={styles.questText}>Laisser un avis - 1XP ({(dailyQuestProgress3 * 100).toFixed(0)}%)</Text>
                         <View style={styles.progressBarWithButton}>
                             <BarreProgression backgroundColor="white" progressColor="#4F88A6" progress={dailyQuestProgress3} />
                             <ClaimButton
@@ -144,7 +147,7 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 28,
         marginTop: 20,
-        fontWeight: '600',
+        fontWeight: '700',
         fontFamily: 'Helvetica Neue',
     },
     blueRectangle: {
@@ -177,10 +180,6 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.3,
         shadowRadius: 5,
         elevation: 5,
-    },
-    progressBarContainer: {
-        width: '70%',
-        marginTop: 20,
     },
     progressBarWithButton: {
         flexDirection: 'row',
@@ -218,7 +217,7 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 28,
         marginTop: 20,
-        fontWeight: '600',
+        fontWeight: '700',
         fontFamily: 'Helvetica Neue',
     },
     blueRectangleLarge: {
@@ -239,7 +238,7 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     bottomSpace: {
-        height: 200,
+        height: 50,
     },
     iconContainer: {
         alignItems: 'center',

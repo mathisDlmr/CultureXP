@@ -4,12 +4,12 @@ import { useNavigation } from '@react-navigation/native';
 
 const Header = () => {
   const navigation = useNavigation();
-  const xp = 750;
-  const maxXp = 1500;
+  const xp = 150;
+  const maxXp = 400;
 
   return (
     <View style={styles.header}>
-      <Image source={require('../assets/images/icon.png')} style={{height:60, width:60}}/>
+      <TouchableOpacity onPress={() => navigation.navigate('shopNav')}><Image source={require('../assets/images/icon.png')} style={{height:60, width:60}}/></TouchableOpacity>
       <View style={styles.xpBar}>
         <View style={[styles.xpFill, { width: `${(xp / maxXp) * 100}%` }]} />
         <Text style={{fontSize:18, color:"#fff", fontWeight:'700', position:'absolute',top:4,left:15}}>Level 10</Text>

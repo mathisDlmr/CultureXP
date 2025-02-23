@@ -7,13 +7,17 @@ interface ClaimButtonProps {
 }
 
 const ClaimButton: React.FC<ClaimButtonProps> = ({ isLocked, onPress }) => {
+    if (isLocked) {
+        return null;
+    }
+
     return (
         <TouchableOpacity
-            style={[styles.button, isLocked ? styles.lockedButton : styles.claimButton]}
+            style={[styles.button, styles.claimButton]}
             onPress={onPress}
             disabled={isLocked}
         >
-            <Text style={styles.buttonText}>{isLocked ? "Locked" : "Claim"}</Text>
+            <Text style={styles.buttonText}>Claim</Text>
         </TouchableOpacity>
     );
 };

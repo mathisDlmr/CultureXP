@@ -53,12 +53,12 @@ const MapScreen = () => {
         latitude: element.lat,
         longitude: element.lon,
         type: element.tags.amenity === "museum"
-          ? "Musée gratuit -24 ans, ✨ 200XP"
+          ? "Musée gratuit -24 ans, ✨ 6XP"
           : element.tags.amenity === "library"
-          ? "Librairie en libre accès, ✨ 50XP"
+          ? "Librairie en libre accès, ✨ 3-22XP"
           : element.tags.amenity === "theatre"
-          ? "Théâtre gratuit -18 ans, ✨ 100XP"
-          : "Lieu Culturel, ✨ 50XP",
+          ? "Théâtre gratuit -18 ans, ✨ 6XP"
+          : "Lieu Culturel, ✨ 5XP",
         oldType: element.tags.tourism || element.tags.amenity,
       }));
 
