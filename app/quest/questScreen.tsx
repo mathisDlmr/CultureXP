@@ -30,7 +30,7 @@ const CircularProgress = ({ progress, size, strokeWidth, color }) => {
 };
 
 export default function QuestScreen() {
-    const xp = 150;
+    const xp = 250;
     const maxXp = 400;
     const progress = xp / maxXp;
     const xpRemaining = maxXp - xp;

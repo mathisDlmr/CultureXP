@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 
 const Header = () => {
   const navigation = useNavigation();
-  const xp = 150;
+  const xp = 250;
   const maxXp = 400;
 
   return (

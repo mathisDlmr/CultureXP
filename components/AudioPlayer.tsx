@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { useAudioPlayer } from '../context/AudioPlayerContext';
 import { Play, Pause, SkipForward, SkipBack } from 'lucide-react-native';
+import { X } from 'lucide-react-native'; // Assurez-vous d'importer une icône appropriée pour le bouton de fermeture
 
 const AudioPlayer = () => {
   const {
@@ -56,7 +57,10 @@ const AudioPlayer = () => {
     >
       {expanded ? (
         <ScrollView contentContainerStyle={{ alignItems: 'center', width: '100%', paddingBottom: 20 }}>
-          <Image source={{ uri: currentEpisode.image }} style={{ width: 325, height: 325, borderRadius: 10 }} />
+          <TouchableOpacity onPress={stopPodcast} style={{ position: 'absolute', top: 10, right: 10 }}>
+            <X size={32} color={'#fff'} />
+          </TouchableOpacity>
+          <Image source={{ uri: currentEpisode.image }} style={{ width: 325, height: 325, borderRadius: 10, marginTop:50 }} />
           <Text style={{ fontSize: 18, marginTop: 10, color: '#fff', fontWeight: '600', alignSelf:'flex-start' }}>{currentEpisode.title}</Text>
           <View style={{ flexDirection: 'row', justifyContent: 'space-around', width: '60%', marginTop: 20 }}>
             <TouchableOpacity onPress={seekBackward}><SkipBack size={44} color={'#fff'}/></TouchableOpacity>
@@ -97,6 +101,9 @@ const AudioPlayer = () => {
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <TouchableOpacity onPress={togglePlayPause}>
               {isPaused ? <Play size={26} color={'#ddd'}/> : <Pause size={26} color={'#ddd'}/>}
+            </TouchableOpacity>
+            <TouchableOpacity onPress={stopPodcast} style={{ margin: 5 }}>
+              <X size={26} color={'#ddd'} />
             </TouchableOpacity>
           </View>
           <View style={{ position: 'absolute', bottom: -10, left: 0, right: 0, height: 4, backgroundColor: '#ddd' }}>
