@@ -28,8 +28,8 @@ const PodcastScreen = ({ navigation }) => {
   }, [podcasts]);
 
   const searchPodcasts = async (subjects) => {
-    const apiKey = 'JC9VAXBYVKVTUKXYEJEM';
-    const apiSecret = 'eVKPgnRZs6qB$QedUwEEvgaZaEw2xTyLHZ2UGgMk';
+    const apiKey = '';
+    const apiSecret = '';
     const apiHeaderTime = Math.floor(Date.now() / 1000);
     const hash = crypto.SHA1(apiKey + apiSecret + apiHeaderTime).toString(crypto.enc.Hex);
 
