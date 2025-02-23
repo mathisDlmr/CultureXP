@@ -33,8 +33,13 @@ export default function CustomNavBar({ state, navigation }) {
         }}
       >
         {tabs.map((tab, index) => {
-          const isFocused = state.index === index;
-
+          let isFocused = 0;
+          if (state.index === 0 && index === 0) {
+            isFocused = 1;
+          }
+          else {
+            isFocused = Number(state.index === index+1);
+          }
           const onPress = () => {
             const event = navigation.emit({
               type: 'tabPress',
