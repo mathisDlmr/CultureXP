@@ -3,7 +3,7 @@ import { View, Text, FlatList, StyleSheet, Button, TouchableOpacity, Image } fro
 import axios from 'axios';
 import { useAudioPlayer } from '../../context/AudioPlayerContext';
 import AudioPlayer from '../../components/AudioPlayer';
-import { DessertIcon } from 'lucide-react-native';
+import { CircleCheckBig } from 'lucide-react-native';
 
 const EpisodesScreen = ({ route }) => {
   const [episodes, setEpisodes] = useState([]);
@@ -46,6 +46,22 @@ const EpisodesScreen = ({ route }) => {
           })}>
           <View style={styles.podcastDetails}>
             <Text style={styles.podcastTitle}>{item.title}</Text>
+          </View>
+          <View
+            style={{
+              justifyContent:'center',
+              alignItems:'center',
+              flexDirection: 'row',
+              padding:6,
+              borderRadius:5,
+              gap:8
+            }}
+          >
+              {Math.floor(Math.random()*4)==3 ? 
+                <View style={{ justifyContent:'center', alignItems:'center', flexDirection: 'row', borderRadius:5, gap:8 }}><CircleCheckBig size={24} color={'#fff'}/><View style={{backgroundColor:'#AAD492', padding: 6, borderRadius:12}}><Text style={{fontSize:20, fontWeight:'800',color:'#fff'}}>{3+Math.floor(Math.random()*3)}XP</Text></View></View>
+                  : 
+                <View style={{backgroundColor:'#083A44', padding: 6, borderRadius:12}}><Text style={{fontSize:20, fontWeight:'800',color:'#fff'}}>{3+Math.floor(Math.random()*3)}XP</Text></View>
+              }
           </View>
           <TouchableOpacity style={styles.menuButton}>
             <Text style={styles.menuText}>⋮</Text>

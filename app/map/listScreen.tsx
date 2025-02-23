@@ -72,7 +72,24 @@ const ListScreen = () => {
 
     return (
       <View style={styles.itemContainer}>
-        <Image source={{ uri: item.image }} style={styles.image} />
+        <View>
+          <Image source={{ uri: item.image }} style={styles.image} />
+          <View
+            style={{
+              position: 'absolute',
+              bottom:10,
+              left:8,
+              justifyContent:'center',
+              alignItems:'center',
+              flexDirection: 'row',
+              padding:6,
+              borderRadius:5,
+              gap:8
+            }}
+          >
+            <View style={{backgroundColor:'#083A44', padding: 6, borderRadius:12}}><Text style={{fontSize:20, fontWeight:'800',color:'#fff'}}>{6+Math.floor(Math.random()*9)}XP</Text></View>
+          </View>
+        </View>
         <View style={styles.textContainer}>
           <Text style={styles.title}>{item.title}</Text>
           <View style={styles.scheduleContainer}>

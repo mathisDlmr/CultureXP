@@ -83,7 +83,7 @@ const PodcastScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.sectionTitle}>Ces podcasts peuvent vous plaire</Text>
+      <Text style={styles.sectionTitle}>Vous pourriez aimer</Text>
       <FlatList
         data={podcasts}
         keyExtractor={(item, index) => item.id + '-' + index}
@@ -103,9 +103,18 @@ const PodcastScreen = ({ navigation }) => {
             <Text style={styles.podcastTitle}>{item.title}</Text>
             <Text style={styles.podcastAuthor}>{item.author}</Text>
           </View>
-          <TouchableOpacity style={styles.menuButton}>
-            <Text style={styles.menuText}>⋮</Text>
-          </TouchableOpacity>
+          <View
+            style={{
+              justifyContent:'center',
+              alignItems:'center',
+              flexDirection: 'row',
+              padding:6,
+              borderRadius:5,
+              gap:8
+            }}
+          >
+              <View style={{backgroundColor:'#083A44', padding: 6, borderRadius:12}}><Text style={{fontSize:20, fontWeight:'800',color:'#fff'}}>2-{3+Math.floor(Math.random()*3)}XP</Text></View>
+          </View>
         </TouchableOpacity>
         )}
       />
@@ -148,7 +157,7 @@ const PodcastScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#252121' },
-  sectionTitle: { fontSize: 26, fontWeight: '800', margin: 10, color: '#fff' },
+  sectionTitle: { fontSize: 24, fontWeight: '800', margin: 10, color: '#fff' },
   podcastItem: {
     padding: 10,
     flexDirection: 'row',
