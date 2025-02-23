@@ -20,7 +20,9 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#252121"
-      }
+      },
+      "icon": "./assets/images/icon.png",
+      "package": "com.mathisdlmr.CulturXP"
     },
     "web": {
       "bundler": "metro",
@@ -32,6 +34,14 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "d2ca6c97-fc92-4807-8f83-ee0b2f54893f"
+      }
     }
   }
 }

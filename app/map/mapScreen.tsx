@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { StyleSheet, View, TextInput, TouchableOpacity, Text, Animated } from 'react-native';
-import { Landmark, Library, Drama, SlidersHorizontal, Earth } from 'lucide-react-native';
+import { Landmark, Library, Drama, SlidersHorizontal, Earth, List } from 'lucide-react-native';
 import MapView, { Marker } from 'react-native-maps';
+import { useNavigation } from '@react-navigation/native';
 import * as Location from 'expo-location';
 import axios from 'axios';
 
@@ -12,6 +13,8 @@ const MapScreen = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isFilterVisible, setIsFilterVisible] = useState(false);
   const filterAnim = useRef(new Animated.Value(0)).current;
+
+  const navigation = useNavigation();
 
   useEffect(() => {
     const requestLocationPermission = async () => {
@@ -50,12 +53,12 @@ const MapScreen = () => {
         latitude: element.lat,
         longitude: element.lon,
         type: element.tags.amenity === "museum"
-          ? "Musée gratuit -24 ans, ✨ 200XP"
+          ? "Musée gratuit -24 ans, ✨ 6XP"
           : element.tags.amenity === "library"
-          ? "Librairie en libre accès, ✨ 50XP"
+          ? "Librairie en libre accès, ✨ 3-22XP"
           : element.tags.amenity === "theatre"
-          ? "Théâtre gratuit -18 ans, ✨ 100XP"
-          : "Lieu Culturel, ✨ 50XP",
+          ? "Théâtre gratuit -18 ans, ✨ 6XP"
+          : "Lieu Culturel, ✨ 5XP",
         oldType: element.tags.tourism || element.tags.amenity,
       }));
 
@@ -123,6 +126,7 @@ const MapScreen = () => {
 
   return (
     <View style={styles.container}>
+      <TouchableOpacity style={styles.listIconContainer} onPress={()=>navigation.navigate("listScreen")}><List size={32} color={'#fff'}/></TouchableOpacity>
       {location && (
         <MapView
           style={styles.map}
@@ -269,10 +273,19 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     justifyContent: 'center',
     paddingLeft: 15,
+    zIndex: 1, 
   },
-  searchInput: {
-    flex: 1,
-    fontSize: 16,
+  listIconContainer: {
+    position: 'absolute',
+    top: 10,
+    right: 20,
+    width: 55,
+    height: 55,
+    backgroundColor: '#344E73',
+    borderRadius: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 2, 
   },
   filterIconContainer: {
     position: 'absolute',
@@ -284,6 +297,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     justifyContent: 'center',
     alignItems: 'center',
+    zIndex: 1,
   },
   filterButtonsContainer: {
     position: 'absolute',
@@ -295,11 +309,12 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     justifyContent: 'space-around',
     alignItems: 'center',
+    zIndex: 1, 
   },
   filterButton: {
     width: '100%',
     padding: 10,
-    height:42.5,
+    height: 42.5,
     borderBottomWidth: 1,
     borderBottomColor: '#fff',
   },

@@ -1,13 +1,14 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { View, Text, Image, FlatList, StyleSheet, Dimensions, Animated, ScrollView } from 'react-native';
+import { View, Text, Image, FlatList, StyleSheet, Dimensions, Animated, ScrollView, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const { width, height } = Dimensions.get('window');
 
 const imagesCarousel = [
   { url: 'https://www.unjourdeplusaparis.com/wp-content/uploads/2015/05/photo-louvre-insolite.jpg', title: 'Nouvelle exposition au Louvre', text: 'Nouvelle exposition au Louvre, entrée gratuite pour les -26 ans !' },
+  { url: 'https://cdn-imgix.headout.com/media/images/c90f7eb7a5825e6f5e57a5a62d05399c-25058-BestofParis-EiffelTower-Cruise-Louvre-002.jpg', title: "La Tour Eiffel s'est refaite une beauté", text: "L'entrée pour les -18 ans sera gratuite jusqu'au 12/03 !" },
+  { url: 'https://lvdneng.rosselcdn.net/sites/default/files/dpistyles_v2/ena_16_9_extra_big/2024/09/09/node_1500304/60613757/public/2024/09/09/25435602.jpeg?itok=dV6TZQta1737646284', title: "Lille 3000 c'est bientôt", text: 'Le Week-end prochain, Lille se transforme en un festival chinois géant !' },
   { url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Louvre_Museum%2C_Paris_22_June_2014.jpg/1200px-Louvre_Museum%2C_Paris_22_June_2014.jpg', title: 'Nouvelle exposition au Louvre', text: 'Nouvelle exposition au Louvre, entrée gratuite pour les -26 ans !' },
-  { url: 'https://cdn-imgix.headout.com/media/images/c90f7eb7a5825e6f5e57a5a62d05399c-25058-BestofParis-EiffelTower-Cruise-Louvre-002.jpg', title: 'Nouvelle exposition au Louvre', text: 'Nouvelle exposition au Louvre, entrée gratuite pour les -26 ans !' },
-  { url: 'https://lvdneng.rosselcdn.net/sites/default/files/dpistyles_v2/ena_16_9_extra_big/2024/09/09/node_1500304/60613757/public/2024/09/09/25435602.jpeg?itok=dV6TZQta1737646284', title: 'Nouvelle exposition au Louvre', text: 'Nouvelle exposition au Louvre, entrée gratuite pour les -26 ans !' },
 ];
 
 const resumeCarousel = [
@@ -35,6 +36,8 @@ const HomeScreen = () => {
   const scrollX = useRef(new Animated.Value(0)).current;
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  const navigation = useNavigation();
+
   useEffect(() => {
     const interval = setInterval(() => {
       if (flatListRef.current) {
@@ -56,6 +59,19 @@ const HomeScreen = () => {
     <View style={styles.carouselItem}>
       <Image source={{ uri: item.url }} style={styles.carouselImage} />
       <View style={styles.carouselTextContainer}>
+        <View
+          style={{
+            justifyContent:'center',
+            alignSelf: 'flex-start',
+            alignItems:'center',
+            flexDirection: 'row',
+            padding:6,
+            borderRadius:5,
+            gap:8
+          }}
+        >
+          <View style={{backgroundColor:'#083A44', padding: 6, borderRadius:12}}><Text style={{fontSize:20, fontWeight:'800',color:'#fff'}}>{12+Math.floor(Math.random()*9)}XP</Text></View>
+        </View>
         <Text style={styles.carouselTitle}>{item.title}</Text>
         <Text style={styles.carouselText}>{item.text}</Text>
       </View>
@@ -99,7 +115,24 @@ const HomeScreen = () => {
         horizontal
         data={resumeCarousel}
         renderItem={({ item }) => (
-          <Image source={{ uri: item.url }} style={styles.resumeImage} />
+          <View>
+            <Image source={{ uri: item.url }} style={styles.resumeImage} />
+            <View
+              style={{
+                position: 'absolute',
+                top:3,
+                right:3,
+                justifyContent:'center',
+                alignItems:'center',
+                flexDirection: 'row',
+                padding:6,
+                borderRadius:5,
+                gap:8
+              }}
+            >
+              <View style={{backgroundColor:'#083A44', padding: 6, borderRadius:12}}><Text style={{fontSize:20, fontWeight:'800',color:'#fff'}}>{8+Math.floor(Math.random()*9)}XP</Text></View>
+            </View>
+          </View>
         )}
         keyExtractor={(item, index) => index.toString()}
       />
@@ -116,7 +149,24 @@ const HomeScreen = () => {
         horizontal
         data={recommendedTitles}
         renderItem={({ item }) => (
-          <Image source={{ uri: item.url }} style={styles.recommendedImage} />
+          <TouchableOpacity onPress={()=>{navigation.navigate("achieveScreen")}}>
+            <Image source={{ uri: item.url }} style={styles.recommendedImage}/>
+            <View
+              style={{
+                position: 'absolute',
+                top:3,
+                right:3,
+                justifyContent:'center',
+                alignItems:'center',
+                flexDirection: 'row',
+                padding:6,
+                borderRadius:5,
+                gap:8
+              }}
+            >
+              <View style={{backgroundColor:'#083A44', padding: 6, borderRadius:12}}><Text style={{fontSize:20, fontWeight:'800',color:'#fff'}}>2-3XP</Text></View>
+            </View>
+          </TouchableOpacity>
         )}
         keyExtractor={(item, index) => index.toString()}
       />
@@ -187,11 +237,10 @@ const styles = StyleSheet.create({
     margin: 5,
   },
   singleImage: {
-    width: '95%',
+    width: '100%',
     height: height * 0.25,
     borderRadius:10,
     alignSelf: 'center',
-    marginVertical: 5,
   },
   singleImageTextContainer: {
     position: 'absolute',

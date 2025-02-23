@@ -7,10 +7,14 @@ import PodcastScreen from './podcastNav/podcastScreen';
 import EpisodeScreen from './podcastNav/episodeScreen';
 import Header from '../components/Header';
 import CustomNavBar from '../components/CustomNavBar';
-import AudioPlayer from '../components/AudioPlayer';
+import BookDetailScreen from './book/bootDetailScreen';
 import MapScreen from './map/mapScreen';
 import BookScreen from './book/bookScreen';
+import AchieveScreen from './home/achieveScreen';
 import QuestScreen from './quest/questScreen';
+import ListScreen from './map/listScreen';
+import ShopScreen from './shop/shopScreen';
+import AudioPlayer from '../components/AudioPlayer';
 import { AudioPlayerProvider } from '../context/AudioPlayerContext';
 
 const Stack = createStackNavigator();
@@ -28,6 +32,7 @@ function HomeStackNavigator() {
   return (
     <Stack.Navigator>
       <Stack.Screen name="homeScreen" component={HomeScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="achieveScreen" component={AchieveScreen} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 }
@@ -41,10 +46,20 @@ function PodcastStackNavigator() {
   );
 }
 
+function BookStackNavigator() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="bookScreen" component={BookScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="bookDetailScreen" component={BookDetailScreen} options={{ headerShown: false }} />
+    </Stack.Navigator>
+  );
+}
+
 function MapStackNavigator() {
   return (
     <Stack.Navigator>
       <Stack.Screen name="mapScreen" component={MapScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="listScreen" component={ListScreen} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 }
@@ -60,10 +75,11 @@ export default function App() {
           <Tab.Screen name="homeNav" component={HomeStackNavigator} />
           <Tab.Screen name="questNav" component={QuestStackNavigator} />
           <Tab.Screen name="podcastNav" component={PodcastStackNavigator} />
-          <Tab.Screen name="bookNav" component={BookScreen} />
+          <Tab.Screen name="bookNav" component={BookStackNavigator} />
           <Tab.Screen name="mapNav" component={MapStackNavigator} />
+          <Tab.Screen name="shopNav" component={ShopScreen} />
         </Tab.Navigator>
-        <AudioPlayer />
+        <AudioPlayer/>
       </View>
     </AudioPlayerProvider>
   );

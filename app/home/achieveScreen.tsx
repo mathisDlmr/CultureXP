@@ -1,27 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { View, Text, Image, FlatList, StyleSheet, Dimensions, Animated, ScrollView } from 'react-native';
-
-const { width, height } = Dimensions.get('window');
-
-const imagesCarousel = [
-  { url: 'https://www.unjourdeplusaparis.com/wp-content/uploads/2015/05/photo-louvre-insolite.jpg', title: 'Nouvelle exposition au Louvre', text: 'Nouvelle exposition au Louvre, entrée gratuite pour les -26 ans !' },
-  { url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Louvre_Museum%2C_Paris_22_June_2014.jpg/1200px-Louvre_Museum%2C_Paris_22_June_2014.jpg', title: 'Nouvelle exposition au Louvre', text: 'Nouvelle exposition au Louvre, entrée gratuite pour les -26 ans !' },
-  { url: 'https://cdn-imgix.headout.com/media/images/c90f7eb7a5825e6f5e57a5a62d05399c-25058-BestofParis-EiffelTower-Cruise-Louvre-002.jpg', title: 'Nouvelle exposition au Louvre', text: 'Nouvelle exposition au Louvre, entrée gratuite pour les -26 ans !' },
-  { url: 'https://lvdneng.rosselcdn.net/sites/default/files/dpistyles_v2/ena_16_9_extra_big/2024/09/09/node_1500304/60613757/public/2024/09/09/25435602.jpeg?itok=dV6TZQta1737646284', title: 'Nouvelle exposition au Louvre', text: 'Nouvelle exposition au Louvre, entrée gratuite pour les -26 ans !' },
-];
-
-const resumeCarousel = [
-  { url: 'https://m.media-amazon.com/images/I/611kdlRqzKL._AC_UF1000,1000_QL80_.jpg' },
-  { url: 'https://m.media-amazon.com/images/I/61P-RG15UqL._AC_UF1000,1000_QL80_.jpg' },
-  { url: 'https://cdn.cultura.com/cdn-cgi/image/width=830/media/pim/TITELIVE/19_9782290391174_1_75.jpg' },
-  { url: 'https://www.livredepoche.com/sites/default/files/images/livres/couv/9782253096337-001-T.jpeg' },
-  {url : 'https://www.momox-shop.fr/build/_next/image?url=https%3A%2F%2Fimages2.medimops.eu%2Fproduct%2F459742%2FM02290349313-source.jpg&w=1080&q=75'}
-];
-
-const singleImage = {
-  title: 'Festival du cinéma',
-  text: 'Du 24/02 ou 27/02 : Toutes les places de cinéma à -50%',
-};
+import { CircleCheckBig } from 'lucide-react-native';
 
 const recommendedTitles = [
   { url: 'https://podmust.com/wp-content/uploads/hugo-decrypte-actus-du-jour-podcast.png' },
@@ -30,39 +9,247 @@ const recommendedTitles = [
   { url: 'https://img.lemde.fr/2021/03/23/0/0/3000/3000/664/0/75/0/3e006b9_1616516956189-vignette-podcast-lheuredumonde-sansspotify.png'}
 ];
 
-const HomeScreen = () => {
-  const flatListRef = useRef(null);
-  const scrollX = useRef(new Animated.Value(0)).current;
-  const [currentIndex, setCurrentIndex] = useState(0);
+const AchieveScreen = () => {
+  return (
+    <View
+      style={{
+        backgroundColor:'#252121',
+        justifyContent:'flex-start',
+        alignItems:'center',
+        flexDirection: 'column',
+        height:'100%',
+        width: '100%',
+        gap:24
+      }}
+    >
+      <Image source={{uri:'https://podmust.com/wp-content/uploads/hugo-decrypte-actus-du-jour-podcast.png'}} style={{height:192, aspectRatio:1, borderRadius:12}}/>
+      <View
+        style={{
+          justifyContent:'center',
+          alignItems:'flex-start',
+          flexDirection: 'column',
+          gap:16,
+          padding:8
+        }}
+      >
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (flatListRef.current) {
-        const nextIndex = (currentIndex + 1) % imagesCarousel.length;
-        flatListRef.current.scrollToIndex({ index: nextIndex, animated: true });
-        setCurrentIndex(nextIndex);
-      }
-    }, 5000);
 
-    return () => clearInterval(interval);
-  }, [currentIndex]);
 
-  const handleScroll = Animated.event(
-    [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-    { useNativeDriver: false }
-  );
 
-  const renderItem = ({ item }) => (
-    <View style={styles.carouselItem}>
-      <Image source={{ uri: item.url }} style={styles.carouselImage} />
-      <View style={styles.carouselTextContainer}>
-        <Text style={styles.carouselTitle}>{item.title}</Text>
-        <Text style={styles.carouselText}>{item.text}</Text>
+        <View
+          style={{
+            width: '95%',
+            backgroundColor: '#8EC395',
+            borderRadius:15,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding:8,
+          }}
+        >
+          <View
+            style={{
+              justifyContent:'center',
+              alignItems:'flex-start',
+              flexDirection: 'column',
+              gap:4,
+              marginLeft:4,
+            }}
+          >
+            <Text style={{fontSize:20, fontWeight:'800',color:'#fff'}}>Actualités du 18 février</Text>
+            <Text style={{fontSize:16, fontWeight:'400',color:'#fff'}}>18 février - 12 min</Text>
+          </View>
+          <View
+            style={{
+              justifyContent:'center',
+              alignItems:'center',
+              flexDirection: 'row',
+              padding:6,
+              borderRadius:5,
+              gap:8
+            }}
+          >
+            <CircleCheckBig size={24} color={'#fff'}/>
+            <View style={{backgroundColor:'#AAD492', padding: 6, borderRadius:12}}><Text style={{fontSize:20, fontWeight:'800',color:'#fff'}}>2XP</Text></View>
+          </View>
+        </View>
+
+
+
+
+
+
+        <View
+          style={{
+            width: '95%',
+            backgroundColor: '#8EC395',
+            borderRadius:15,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding:8,
+          }}
+        >
+          <View
+            style={{
+              justifyContent:'center',
+              alignItems:'flex-start',
+              flexDirection: 'column',
+              gap:4,
+              marginLeft:4,
+            }}
+          >
+            <Text style={{fontSize:20, fontWeight:'800',color:'#fff'}}>Actualités du 19 février</Text>
+            <Text style={{fontSize:16, fontWeight:'400',color:'#fff'}}>19 février - 17 min</Text>
+          </View>
+          <View
+            style={{
+              justifyContent:'center',
+              alignItems:'center',
+              flexDirection: 'row',
+              padding:6,
+              borderRadius:5,
+              gap:8
+            }}
+          >
+            <CircleCheckBig size={24} color={'#fff'}/>
+            <View style={{backgroundColor:'#AAD492', padding: 6, borderRadius:12}}><Text style={{fontSize:20, fontWeight:'800',color:'#fff'}}>2XP</Text></View>
+          </View>
+        </View>
+
+
+
+
+
+
+        <View
+          style={{
+            width: '95%',
+            backgroundColor: '#4F88A6',
+            borderRadius:15,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding:8,
+          }}
+        >
+          <View
+            style={{
+              justifyContent:'center',
+              alignItems:'flex-start',
+              flexDirection: 'column',
+              gap:4,
+              marginLeft:4,
+            }}
+          >
+            <Text style={{fontSize:20, fontWeight:'800',color:'#fff'}}>Actualités du 20 février</Text>
+            <Text style={{fontSize:16, fontWeight:'400',color:'#fff'}}>20 février - 23 min</Text>
+          </View>
+          <View
+            style={{
+              justifyContent:'center',
+              alignItems:'center',
+              flexDirection: 'row',
+              padding:6,
+              borderRadius:5,
+              gap:8
+            }}
+          >
+            <View style={{backgroundColor:'#083A44', padding: 6, borderRadius:12}}><Text style={{fontSize:20, fontWeight:'800',color:'#fff'}}>3XP</Text></View>
+          </View>
+        </View>
+
+
+
+
+        <View
+          style={{
+            width: '95%',
+            backgroundColor: '#4F88A6',
+            borderRadius:15,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding:8,
+          }}
+        >
+          <View
+            style={{
+              justifyContent:'center',
+              alignItems:'flex-start',
+              flexDirection: 'column',
+              gap:4,
+              marginLeft:4,
+            }}
+          >
+            <Text style={{fontSize:20, fontWeight:'800',color:'#fff'}}>Actualités du 21 février</Text>
+            <Text style={{fontSize:16, fontWeight:'400',color:'#fff'}}>21 février - 14 min</Text>
+          </View>
+          <View
+            style={{
+              justifyContent:'center',
+              alignItems:'center',
+              flexDirection: 'row',
+              padding:6,
+              borderRadius:5,
+              gap:8
+            }}
+          >
+            <View style={{backgroundColor:'#083A44', padding: 6, borderRadius:12}}><Text style={{fontSize:20, fontWeight:'800',color:'#fff'}}>2XP</Text></View>
+          </View>
+        </View>
+
+
+
+        <View
+          style={{
+            width: '95%',
+            backgroundColor: '#4F88A6',
+            borderRadius:15,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding:8,
+          }}
+        >
+          <View
+            style={{
+              justifyContent:'center',
+              alignItems:'flex-start',
+              flexDirection: 'column',
+              gap:4,
+              marginLeft:4,
+            }}
+          >
+            <Text style={{fontSize:20, fontWeight:'800',color:'#fff'}}>Actualités du 22 février</Text>
+            <Text style={{fontSize:16, fontWeight:'400',color:'#fff'}}>22 février - 18 min</Text>
+          </View>
+          <View
+            style={{
+              justifyContent:'center',
+              alignItems:'center',
+              flexDirection: 'row',
+              padding:6,
+              borderRadius:5,
+              gap:8
+            }}
+          >
+            <View style={{backgroundColor:'#083A44', padding: 6, borderRadius:12}}><Text style={{fontSize:20, fontWeight:'800',color:'#fff'}}>2XP</Text></View>
+          </View>
+        </View>
+
+
+
+
       </View>
     </View>
-  );
 
-  return (
+
+
+
+
+
+/*
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <Animated.FlatList
         ref={flatListRef}
@@ -121,98 +308,7 @@ const HomeScreen = () => {
         keyExtractor={(item, index) => index.toString()}
       />
     </ScrollView>
+*/
   );
 };
-
-const styles = StyleSheet.create({
-  scrollContainer: {
-    backgroundColor: '#252121'
-  },
-  carouselItem: {
-    width: width,
-    height: height * 0.6,
-    marginBottom: 10
-  },
-  carouselImage: {
-    width: '100%',
-    height: '100%',
-    shadowColor: 'black',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.5,
-    shadowRadius: 10,
-  },
-  carouselTextContainer: {
-    position: 'absolute',
-    bottom: 40,
-    left: 20,
-    right: 10
-  },
-  carouselTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: 'white',
-  },
-  carouselText: {
-    fontSize: 16,
-    color: 'white',
-  },
-  carouselIndicatorContainer: {
-    position: 'absolute',
-    top: 5,
-    left: 0,
-    right: 0,
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-  carouselIndicator: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: 'white',
-    marginHorizontal: 3,
-    shadowColor: 'white',
-    shadowOpacity: 1,
-    shadowRadius: 5,
-    elevation: 5,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: '800',
-    margin: 10,
-    color:'#fff'
-  },
-  resumeImage: {
-    width: width * 0.25,
-    height: height * 0.15,
-    margin: 5,
-  },
-  singleImage: {
-    width: '95%',
-    height: height * 0.25,
-    borderRadius:10,
-    alignSelf: 'center',
-    marginVertical: 5,
-  },
-  singleImageTextContainer: {
-    position: 'absolute',
-    bottom: 30,
-    left: 40,
-    right:40
-  },
-  singleImageTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: 'white',
-  },
-  singleImageText: {
-    fontSize: 16,
-    color: 'white',
-  },
-  recommendedImage: {
-    width: width * 0.25,
-    height: height * 0.15,
-    margin: 5,
-  },
-});
-
-export default HomeScreen;
+export default AchieveScreen;
